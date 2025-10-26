@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .ai
+.cursor
 .env
 
 # Editor directories and files
