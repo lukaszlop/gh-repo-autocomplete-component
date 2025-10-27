@@ -26,7 +26,7 @@ test.describe("GitHub Autocomplete Component", () => {
 
   test.describe("Search Functionality", () => {
     test("should display results when typing", async () => {
-      await page.search("react");
+      await page.search("typescript");
       await page.waitForResults();
 
       const resultsCount = await page.getResultsCount();
@@ -35,14 +35,14 @@ test.describe("GitHub Autocomplete Component", () => {
 
     test("should show loading state while searching", async () => {
       await page.searchInput.click();
-      await page.searchInput.type("react", {delay: 100});
+      await page.searchInput.type("docker", {delay: 100});
 
       // Loading skeleton should appear briefly
       await expect(page.loadingSkeleton).toBeVisible();
     });
 
     test("should clear results when input is cleared", async () => {
-      await page.search("react");
+      await page.search("kubernetes");
       await page.waitForResults();
 
       await page.clearSearch();
@@ -61,7 +61,7 @@ test.describe("GitHub Autocomplete Component", () => {
 
   test.describe("Keyboard Navigation", () => {
     test("should navigate results with arrow keys", async () => {
-      await page.search("react");
+      await page.search("node");
       await page.waitForResults();
 
       await page.pressArrowDown();
@@ -71,7 +71,7 @@ test.describe("GitHub Autocomplete Component", () => {
     });
 
     test("should wrap navigation at list boundaries", async () => {
-      await page.search("react");
+      await page.search("python");
       await page.waitForResults();
 
       const resultsCount = await page.getResultsCount();
@@ -88,7 +88,7 @@ test.describe("GitHub Autocomplete Component", () => {
     });
 
     test("should close popover on Escape key", async () => {
-      await page.search("react");
+      await page.search("java");
       await page.waitForResults();
 
       await page.pressEscape();
@@ -98,7 +98,7 @@ test.describe("GitHub Autocomplete Component", () => {
     });
 
     test("should open link on Enter key", async () => {
-      await page.search("react");
+      await page.search("ruby");
       await page.waitForResults();
 
       await page.pressArrowDown();
@@ -119,7 +119,7 @@ test.describe("GitHub Autocomplete Component", () => {
 
   test.describe("Mouse Interaction", () => {
     test("should highlight result on hover", async () => {
-      await page.search("react");
+      await page.search("rust");
       await page.waitForResults();
 
       const firstResult = page.getResultItem(0);
@@ -129,7 +129,7 @@ test.describe("GitHub Autocomplete Component", () => {
     });
 
     test("should open link on click", async () => {
-      await page.search("react");
+      await page.search("golang");
       await page.waitForResults();
 
       const firstResult = page.getResultItem(0);
@@ -172,8 +172,10 @@ test.describe("GitHub Autocomplete Component", () => {
   test.describe("Responsive Design", () => {
     test("should work on mobile viewport", async () => {
       await page.page.setViewportSize({width: 375, height: 667});
+      // Wait for viewport to stabilize
+      await page.page.waitForTimeout(100);
 
-      await page.search("react");
+      await page.search("vue");
       await page.waitForResults();
 
       const resultsCount = await page.getResultsCount();
@@ -182,8 +184,10 @@ test.describe("GitHub Autocomplete Component", () => {
 
     test("should work on tablet viewport", async () => {
       await page.page.setViewportSize({width: 768, height: 1024});
+      // Wait for viewport to stabilize
+      await page.page.waitForTimeout(100);
 
-      await page.search("react");
+      await page.search("angular");
       await page.waitForResults();
 
       const resultsCount = await page.getResultsCount();
@@ -217,7 +221,7 @@ test.describe("GitHub Autocomplete Component", () => {
     });
 
     test("should match screenshot - with results", async () => {
-      await page.search("react");
+      await page.search("svelte");
       await page.waitForResults();
 
       await expect(page.page).toHaveScreenshot("with-results.png", {
