@@ -305,6 +305,53 @@ export class LoginPage {
 }
 ```
 
+## Visual Regression Tests - Platform Considerations
+
+⚠️ **Important:** Visual regression tests are **platform-specific** and have special handling in this project.
+
+### Current Setup
+
+- Snapshots are generated on **macOS** (darwin)
+- CI runs on **Linux** (ubuntu)
+- Screenshots differ between platforms due to font rendering and other OS differences
+
+### CI Configuration
+
+Visual regression tests are **excluded from CI** to avoid false failures:
+
+```bash
+# CI runs this command
+npm run test:e2e -- --grep-invert "Visual Regression"
+```
+
+### Running Visual Tests Locally
+
+```bash
+# Run all tests including visual regression
+npm run test:e2e
+
+# Update snapshots for your platform
+npm run test:e2e -- --update-snapshots
+```
+
+### Generating Cross-Platform Snapshots
+
+If you need to generate Linux snapshots for CI:
+
+1. Use Docker or a Linux VM
+2. Run: `npm run test:e2e -- --update-snapshots`
+3. Commit the generated `*-linux.png` files
+
+### Timeout Configuration
+
+Tests that make real API calls (GitHub search) have increased timeouts:
+
+- Local: 15 seconds (default)
+- CI: 15 seconds with 2 retry attempts
+- Reason: GitHub API rate limiting and network latency
+
+If you see timeout errors in `waitForResults()`, the GitHub API may be rate-limiting or experiencing issues.
+
 ## Resources
 
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)

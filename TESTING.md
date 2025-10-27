@@ -76,7 +76,26 @@ npm run test:e2e:debug
 
 # Show test report
 npm run test:e2e:report
+
+# Update visual regression snapshots (run locally)
+npm run test:e2e -- --update-snapshots
 ```
+
+#### Visual Regression Testing
+
+Visual regression tests use Playwright's screenshot comparison feature. **Important notes:**
+
+- Screenshots are **platform-specific** (macOS vs Linux render differently)
+- Current snapshots are generated on **macOS** (darwin)
+- Visual regression tests are **excluded from CI** (runs on Linux)
+- To run visual tests locally: `npm run test:e2e`
+- To update snapshots: `npm run test:e2e -- --update-snapshots`
+
+If you need to generate Linux snapshots:
+
+1. Run tests in a Linux environment (Docker, VM, or CI)
+2. Use `--update-snapshots` flag
+3. Commit the generated `*-linux.png` files
 
 ### All Tests
 

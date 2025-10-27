@@ -106,10 +106,11 @@ export class GitHubAutocompletePage {
    * Wait for search results to load
    */
   async waitForResults() {
+    // Increase timeout for CI environments where API calls might be slower
     await this.page
       .locator('[role="option"]')
       .first()
-      .waitFor({state: "visible", timeout: 5000});
+      .waitFor({state: "visible", timeout: 15000});
   }
 
   /**

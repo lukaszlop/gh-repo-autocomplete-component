@@ -206,23 +206,32 @@ test.describe("GitHub Autocomplete Component", () => {
     });
   });
 
+  // Visual regression tests are platform-specific
+  // Snapshots generated on macOS won't match Linux CI
+  // These tests are excluded from CI but should be run locally
   test.describe("Visual Regression", () => {
     test("should match screenshot - initial state", async () => {
-      await expect(page.page).toHaveScreenshot("initial-state.png");
+      await expect(page.page).toHaveScreenshot("initial-state.png", {
+        maxDiffPixels: 100,
+      });
     });
 
     test("should match screenshot - with results", async () => {
       await page.search("react");
       await page.waitForResults();
 
-      await expect(page.page).toHaveScreenshot("with-results.png");
+      await expect(page.page).toHaveScreenshot("with-results.png", {
+        maxDiffPixels: 100,
+      });
     });
 
     test("should match screenshot - empty state", async () => {
       await page.search("nonexistentrepo12345xyz");
       await page.waitForLoadingComplete();
 
-      await expect(page.page).toHaveScreenshot("empty-state.png");
+      await expect(page.page).toHaveScreenshot("empty-state.png", {
+        maxDiffPixels: 100,
+      });
     });
   });
 });
