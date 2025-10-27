@@ -172,8 +172,9 @@ test.describe("GitHub Autocomplete Component", () => {
   test.describe("Responsive Design", () => {
     test("should work on mobile viewport", async () => {
       await page.page.setViewportSize({width: 375, height: 667});
-      // Wait for viewport to stabilize
-      await page.page.waitForTimeout(100);
+      // Reload page after viewport change to ensure clean state
+      await page.page.reload({waitUntil: "domcontentloaded"});
+      await page.page.waitForTimeout(500);
 
       await page.search("vue");
       await page.waitForResults();
@@ -184,8 +185,9 @@ test.describe("GitHub Autocomplete Component", () => {
 
     test("should work on tablet viewport", async () => {
       await page.page.setViewportSize({width: 768, height: 1024});
-      // Wait for viewport to stabilize
-      await page.page.waitForTimeout(100);
+      // Reload page after viewport change to ensure clean state
+      await page.page.reload({waitUntil: "domcontentloaded"});
+      await page.page.waitForTimeout(500);
 
       await page.search("angular");
       await page.waitForResults();

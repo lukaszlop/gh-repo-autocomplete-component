@@ -352,6 +352,23 @@ Tests that make real API calls (GitHub search) have increased timeouts:
 
 If you see timeout errors in `waitForResults()`, the GitHub API may be rate-limiting or experiencing issues.
 
+### Viewport Testing
+
+Tests that change viewport sizes reload the page after changing the viewport:
+
+```typescript
+await page.page.setViewportSize({width: 768, height: 1024});
+await page.page.reload({waitUntil: "domcontentloaded"});
+await page.page.waitForTimeout(500);
+```
+
+**Why reload after viewport change?**
+
+- Radix UI Popover uses portals that may not reposition correctly after viewport changes
+- Ensures clean component state without leftover event listeners
+- Prevents issues with focus management and keyboard navigation
+- Guarantees consistent behavior across different viewport sizes
+
 ## Resources
 
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)

@@ -38,8 +38,12 @@ export class GitHubAutocompletePage {
 
   /**
    * Type into the search input
+   * Ensures input is focused and visible before typing
    */
   async search(query: string) {
+    // Ensure input is visible and focused
+    await this.searchInput.waitFor({state: "visible", timeout: 5000});
+    await this.searchInput.click();
     await this.searchInput.fill(query);
   }
 

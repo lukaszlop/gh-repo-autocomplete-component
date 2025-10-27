@@ -319,6 +319,7 @@ beforeAll(() => {
 1. Install browsers: `npx playwright install chromium`
 2. Check dev server is running on `http://localhost:5173`
 3. Review screenshots in `test-results/` folder
+4. If viewport tests fail: Tests reload page after viewport changes due to Radix UI Popover portal positioning issues
 
 ### Coverage Not Generated
 
