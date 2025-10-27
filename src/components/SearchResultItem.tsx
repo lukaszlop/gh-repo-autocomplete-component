@@ -4,11 +4,11 @@
  * Memoized for performance optimization.
  */
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { formatStarCount } from "@/lib/utils/format";
-import type { SearchResultItem as SearchResultItemType } from "@/types/github";
-import { memo } from "react";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Badge} from "@/components/ui/badge";
+import {formatStarCount} from "@/lib/utils/format";
+import type {SearchResultItem as SearchResultItemType} from "@/types/github";
+import React, {memo} from "react";
 
 interface SearchResultItemProps {
   /** Search result item data */
@@ -17,8 +17,12 @@ interface SearchResultItemProps {
   isActive: boolean;
   /** Click handler for item selection */
   onClick: () => void;
+  /** Mouse enter handler for hover */
+  onMouseEnter?: () => void;
   /** Unique ID for ARIA */
   id: string;
+  /** Data test ID for E2E testing */
+  "data-testid"?: string;
 }
 
 /**
@@ -28,8 +32,10 @@ function SearchResultItemComponent({
   item,
   isActive,
   onClick,
+  onMouseEnter,
   id,
-}: SearchResultItemProps): JSX.Element {
+  "data-testid": dataTestId,
+}: SearchResultItemProps): React.JSX.Element {
   // Get initials for avatar fallback
   const getInitials = (name: string): string => {
     const parts = name.split(/[\s/-]/);
@@ -42,9 +48,12 @@ function SearchResultItemComponent({
   return (
     <div
       id={id}
-      role="option"
+      role='option'
       aria-selected={isActive}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      data-testid={dataTestId}
+      data-active={isActive}
       className={`
         flex items-center gap-3 p-2 rounded-md cursor-pointer
         transition-colors duration-150
@@ -57,7 +66,7 @@ function SearchResultItemComponent({
     >
       {/* Badge for type (User/Repo) */}
       <Badge
-        variant="outline"
+        variant='outline'
         className={`
           shrink-0 text-xs font-medium
           ${
@@ -71,19 +80,19 @@ function SearchResultItemComponent({
       </Badge>
 
       {/* Avatar */}
-      <Avatar className="w-8 h-8 shrink-0">
-        <AvatarImage src={item.avatarUrl} alt={item.name} loading="lazy" />
-        <AvatarFallback className="text-xs">
+      <Avatar className='w-8 h-8 shrink-0'>
+        <AvatarImage src={item.avatarUrl} alt={item.name} loading='lazy' />
+        <AvatarFallback className='text-xs'>
           {getInitials(item.name)}
         </AvatarFallback>
       </Avatar>
 
       {/* Name */}
-      <span className="flex-1 truncate font-medium text-sm">{item.name}</span>
+      <span className='flex-1 truncate font-medium text-sm'>{item.name}</span>
 
       {/* Stars (only for repos) */}
       {item.type === "repo" && item.stars !== undefined && (
-        <span className="shrink-0 text-sm text-muted-foreground">
+        <span className='shrink-0 text-sm text-muted-foreground'>
           {formatStarCount(item.stars)}
         </span>
       )}

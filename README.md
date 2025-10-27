@@ -40,11 +40,26 @@ A standalone, production-ready React component for real-time GitHub repository a
 
 ### Testing Stack
 
-- **Vitest** 3.2.4 (unit & integration tests)
-- **React Testing Library** 16.3.0
-- **MSW** 2.11.6 (API mocking)
-- **Playwright** 1.56.1 (E2E tests)
-- **@axe-core/react** 4.11.0 (accessibility auditing)
+#### Unit & Integration Testing
+
+- **Vitest** 3.2.4 - Fast unit test runner with ESM support, watch mode, and coverage
+- **React Testing Library** 16.3.0 - User-centric testing with intuitive queries
+- **@testing-library/jest-dom** 6.9.1 - Custom matchers for DOM assertions
+- **@testing-library/user-event** - Realistic user interaction simulation
+- **MSW (Mock Service Worker)** 2.11.6 - Network-level API mocking for integration tests
+- **@vitest/coverage-v8** 3.2.4 - Code coverage reporting with v8 provider
+
+#### E2E Testing
+
+- **Playwright** 1.56.1 - Cross-browser testing (Chromium, Firefox, WebKit)
+  - Auto-waiting and network interception
+  - Screenshots, videos, and trace viewer
+  - Mobile viewport emulation
+
+#### Accessibility Testing
+
+- **@axe-core/react** 4.11.0 - Automated WCAG 2.1 Level AA compliance auditing
+- **Manual Testing**: NVDA (Windows), JAWS (Windows), VoiceOver (macOS/iOS)
 
 ## Getting Started
 
@@ -240,28 +255,34 @@ src/
 
 ## Testing
 
-### Run All Tests
+This project features comprehensive testing with **Vitest**, **React Testing Library**, **MSW**, and **Playwright**.
+
+### Quick Start
 
 ```bash
-# Unit & integration tests
+# Run unit tests
 npm test
 
-# With coverage report
+# Run unit tests with coverage
 npm run test:coverage
 
-# E2E tests (requires build)
-npm run build
+# Run E2E tests
 npm run test:e2e
+
+# Run all tests
+npm run test:all
 ```
 
 ### Test Coverage
 
-- **Unit Tests**: Hooks (`useDebounce`, `useKeyboardNavigation`, `useClickOutside`) and utilities
-- **Integration Tests**: Full user flows with MSW-mocked API responses
-- **E2E Tests**: Keyboard navigation, error handling, search and display in real browsers
-- **Accessibility Tests**: axe-core automated audit in development mode
+- ✅ **Unit Tests**: Hooks, API layer, utilities, UI components
+- ✅ **Integration Tests**: Full user flows with MSW-mocked API responses
+- ✅ **E2E Tests**: Cross-browser testing (Chromium, Firefox, WebKit) with mobile viewports
+- ✅ **Accessibility Tests**: Automated axe-core audits + manual testing (NVDA, JAWS, VoiceOver)
 
-**Target Coverage**: >80% for hooks and utilities
+**Coverage Targets**: >80% for hooks/utilities, >70% for components, zero critical bugs, WCAG 2.1 AA compliant
+
+📖 **For detailed testing documentation, see [TESTING.md](./TESTING.md)**
 
 ## Accessibility
 

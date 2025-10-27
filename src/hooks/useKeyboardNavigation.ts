@@ -22,6 +22,8 @@ interface UseKeyboardNavigationResult {
   handleKeyDown: (e: React.KeyboardEvent) => void;
   /** Reset active index to -1 */
   resetActiveIndex: () => void;
+  /** Set active index (for mouse hover) */
+  setActiveIndex: (index: number) => void;
 }
 
 /**
@@ -124,5 +126,6 @@ export function useKeyboardNavigation({
     activeIndex,
     handleKeyDown,
     resetActiveIndex,
+    setActiveIndex,
   };
 }

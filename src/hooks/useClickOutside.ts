@@ -19,7 +19,7 @@ import {useEffect} from "react";
  * });
  * // Dropdown will close when user clicks outside
  */
-export function useClickOutside<T extends HTMLElement>(
+export function useClickOutside<T extends HTMLElement | null>(
   ref: React.RefObject<T>,
   handler: (event: MouseEvent | TouchEvent) => void
 ): void {

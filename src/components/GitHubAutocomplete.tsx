@@ -4,25 +4,21 @@
  * Features: unified search, keyboard navigation, accessibility, mobile-optimized.
  */
 
-import { EmptyState } from "@/components/EmptyState";
-import { ErrorDisplay } from "@/components/ErrorDisplay";
-import { HintState } from "@/components/HintState";
-import { LoadingSkeleton } from "@/components/LoadingSkeleton";
-import { SearchResultItem } from "@/components/SearchResultItem";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useClickOutside } from "@/hooks/useClickOutside";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useGitHubSearch } from "@/hooks/useGitHubSearch";
-import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
-import { sortResultsAlphabetically } from "@/lib/utils/format";
-import type { SearchResultItem as SearchResultItemType } from "@/types/github";
-import { Search, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {EmptyState} from "@/components/EmptyState";
+import {ErrorDisplay} from "@/components/ErrorDisplay";
+import {HintState} from "@/components/HintState";
+import {LoadingSkeleton} from "@/components/LoadingSkeleton";
+import {SearchResultItem} from "@/components/SearchResultItem";
+import {Input} from "@/components/ui/input";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {useClickOutside} from "@/hooks/useClickOutside";
+import {useDebounce} from "@/hooks/useDebounce";
+import {useGitHubSearch} from "@/hooks/useGitHubSearch";
+import {useKeyboardNavigation} from "@/hooks/useKeyboardNavigation";
+import {sortResultsAlphabetically} from "@/lib/utils/format";
+import type {SearchResultItem as SearchResultItemType} from "@/types/github";
+import {Search, X} from "lucide-react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 
 export interface GitHubAutocompleteProps {
   /**
@@ -50,7 +46,7 @@ export function GitHubAutocomplete({
   placeholder = "Search GitHub repositories and users...",
   className = "",
   onSelect,
-}: GitHubAutocompleteProps): JSX.Element {
+}: GitHubAutocompleteProps): React.JSX.Element {
   // State management
   const [query, setQuery] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -63,7 +59,7 @@ export function GitHubAutocomplete({
   const debouncedQuery = useDebounce(query, 400);
 
   // Search with GitHub API
-  const { data, isLoading, error, isError } = useGitHubSearch({
+  const {data, isLoading, error, isError} = useGitHubSearch({
     query: debouncedQuery,
     enabled: isOpen,
   });
@@ -75,8 +71,8 @@ export function GitHubAutocomplete({
   }, [data?.results]);
 
   // Keyboard navigation
-  const { activeIndex, handleKeyDown, resetActiveIndex } = useKeyboardNavigation(
-    {
+  const {activeIndex, handleKeyDown, resetActiveIndex, setActiveIndex} =
+    useKeyboardNavigation({
       itemsCount: sortedResults.length,
       onSelect: (index) => {
         const result = sortedResults[index];
@@ -85,8 +81,7 @@ export function GitHubAutocomplete({
         }
       },
       isOpen,
-    }
-  );
+    });
 
   // Handle input change
   const handleInputChange = useCallback(
@@ -133,22 +128,25 @@ export function GitHubAutocomplete({
   );
 
   // Handle click outside
-  const handleClickOutside = useCallback((event: MouseEvent | TouchEvent) => {
-    const target = event.target as HTMLElement;
+  const handleClickOutside = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement;
 
-    // Don't close if clicking inside Popover content (rendered in Portal)
-    if (target.closest('[role="listbox"]')) {
-      return;
-    }
+      // Don't close if clicking inside Popover content (rendered in Portal)
+      if (target.closest('[role="listbox"]')) {
+        return;
+      }
 
-    // Don't close if clicking on the input itself (handled by onFocus/onBlur)
-    if (target.closest('[role="combobox"]')) {
-      return;
-    }
+      // Don't close if clicking on the input itself (handled by onFocus/onBlur)
+      if (target.closest('[role="combobox"]')) {
+        return;
+      }
 
-    setIsOpen(false);
-    resetActiveIndex();
-  }, [resetActiveIndex]);
+      setIsOpen(false);
+      resetActiveIndex();
+    },
+    [resetActiveIndex]
+  );
 
   // Click outside detection
   useClickOutside(dropdownRef, handleClickOutside);
@@ -175,19 +173,29 @@ export function GitHubAutocomplete({
   const showHint = query.length > 0 && query.length < 3;
 
   // Show loading during debounce period OR actual loading
-  const showLoading = query.length >= 3 && (
-    isLoading || // Actual API loading
-    (query.length >= 3 && debouncedQuery.length < 3) // Debounce period
-  );
+  const showLoading =
+    query.length >= 3 &&
+    (isLoading || // Actual API loading
+      (query.length >= 3 && debouncedQuery.length < 3)); // Debounce period
 
-  const showError = isError && error && error.type !== "abort" && query.length >= 3;
+  const showError =
+    isError && error && error.type !== "abort" && query.length >= 3;
   const showEmpty =
-    !isLoading && !isError && sortedResults.length === 0 && debouncedQuery.length >= 3 && query.length >= 3;
+    !isLoading &&
+    !isError &&
+    sortedResults.length === 0 &&
+    debouncedQuery.length >= 3 &&
+    query.length >= 3;
   const showResults =
-    !isLoading && !isError && sortedResults.length > 0 && debouncedQuery.length >= 3 && query.length >= 3;
+    !isLoading &&
+    !isError &&
+    sortedResults.length > 0 &&
+    debouncedQuery.length >= 3 &&
+    query.length >= 3;
 
   // Determine if there's any content to show in dropdown
-  const hasDropdownContent = showHint || showLoading || showError || showEmpty || showResults;
+  const hasDropdownContent =
+    showHint || showLoading || showError || showEmpty || showResults;
 
   // Auto-close dropdown if there's nothing to display (prevents empty dropdown flash)
   useEffect(() => {
@@ -223,17 +231,17 @@ export function GitHubAutocomplete({
         }}
       >
         <PopoverTrigger asChild>
-          <div className="relative">
+          <div className='relative' data-testid='search-input-wrapper'>
             {/* Search icon */}
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
-              aria-hidden="true"
+              className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none'
+              aria-hidden='true'
             />
 
             {/* Input field */}
             <Input
               ref={inputRef}
-              type="text"
+              type='text'
               value={query}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
@@ -244,39 +252,41 @@ export function GitHubAutocomplete({
                 }
               }}
               placeholder={placeholder}
-              className="pl-10 pr-10"
-              role="combobox"
+              className='pl-10 pr-10'
+              role='combobox'
               aria-expanded={isOpen}
-              aria-controls="search-results"
-              aria-autocomplete="list"
+              aria-controls='search-results'
+              aria-autocomplete='list'
               aria-activedescendant={
                 activeIndex >= 0 ? `result-${activeIndex}` : undefined
               }
+              data-testid='search-input'
             />
 
             {/* Clear button */}
             {query.length > 0 && (
               <button
-                type="button"
+                type='button'
                 onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+                aria-label='Clear search'
               >
-                <X className="w-4 h-4" aria-hidden="true" />
+                <X className='w-4 h-4' aria-hidden='true' />
               </button>
             )}
           </div>
         </PopoverTrigger>
 
         <PopoverContent
-          id="search-results"
-          role="listbox"
-          side="bottom"
-          align="start"
+          id='search-results'
+          role='listbox'
+          side='bottom'
+          align='start'
           sideOffset={4}
           avoidCollisions={false}
-          className="w-[--radix-popover-trigger-width] p-2 max-h-[50vh] md:max-h-[400px] overflow-y-auto"
+          className='w-[--radix-popover-trigger-width] p-2 max-h-[50vh] md:max-h-[400px] overflow-y-auto'
           onOpenAutoFocus={(e) => e.preventDefault()}
+          data-testid='search-results-list'
         >
           {/* Hint state: < 3 characters */}
           {showHint && <HintState />}
@@ -292,7 +302,7 @@ export function GitHubAutocomplete({
 
           {/* Results */}
           {showResults && (
-            <div className="space-y-1">
+            <div className='space-y-1'>
               {sortedResults.map((result, index) => (
                 <SearchResultItem
                   key={result.id}
@@ -300,6 +310,8 @@ export function GitHubAutocomplete({
                   item={result}
                   isActive={index === activeIndex}
                   onClick={() => handleResultSelect(result)}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  data-testid={`search-result-item-${index}`}
                 />
               ))}
             </div>
@@ -309,10 +321,10 @@ export function GitHubAutocomplete({
 
       {/* Screen reader live region for announcements */}
       <div
-        className="sr-only"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
+        className='sr-only'
+        role='status'
+        aria-live='polite'
+        aria-atomic='true'
       >
         {isLoading && "Loading results..."}
         {showResults && `${resultsCount} results found`}
