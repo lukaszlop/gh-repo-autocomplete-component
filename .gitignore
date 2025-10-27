@@ -15,6 +15,13 @@ dist-ssr
 .cursor
 .env
 
+# Testing
+coverage
+.nyc_output
+test-results
+playwright-report
+*.lcov
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

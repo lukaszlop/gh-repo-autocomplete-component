@@ -13,6 +13,8 @@ interface UseKeyboardNavigationOptions {
   onSelect: (index: number) => void;
   /** Whether the dropdown/list is open */
   isOpen: boolean;
+  /** Optional callback when Escape key is pressed */
+  onEscape?: () => void;
 }
 
 interface UseKeyboardNavigationResult {
@@ -22,6 +24,8 @@ interface UseKeyboardNavigationResult {
   handleKeyDown: (e: React.KeyboardEvent) => void;
   /** Reset active index to -1 */
   resetActiveIndex: () => void;
+  /** Set active index (for mouse hover) */
+  setActiveIndex: (index: number) => void;
 }
 
 /**
@@ -40,6 +44,7 @@ export function useKeyboardNavigation({
   itemsCount,
   onSelect,
   isOpen,
+  onEscape,
 }: UseKeyboardNavigationOptions): UseKeyboardNavigationResult {
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
@@ -109,20 +114,24 @@ export function useKeyboardNavigation({
 
         case "Escape":
           e.preventDefault();
-          // Close handled by parent component
           resetActiveIndex();
+          // Call onEscape callback if provided (to close dropdown)
+          if (onEscape) {
+            onEscape();
+          }
           break;
 
         default:
           break;
       }
     },
-    [isOpen, itemsCount, activeIndex, onSelect, resetActiveIndex]
+    [isOpen, itemsCount, activeIndex, onSelect, resetActiveIndex, onEscape]
   );
 
   return {
     activeIndex,
     handleKeyDown,
     resetActiveIndex,
+    setActiveIndex,
   };
 }
