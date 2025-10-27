@@ -94,8 +94,12 @@ export class GitHubAutocompletePage {
    * Check if results popover is visible
    */
   async isPopoverVisible(): Promise<boolean> {
-    const popover = this.page.getByRole("dialog");
-    return await popover.isVisible();
+    const popover = this.page.locator('[role="listbox"]');
+    try {
+      return await popover.isVisible();
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -112,7 +116,16 @@ export class GitHubAutocompletePage {
    * Wait for loading state to disappear
    */
   async waitForLoadingComplete() {
-    await this.loadingSkeleton.waitFor({state: "hidden"});
+    // Wait for loading skeleton to appear first, or timeout quickly if it doesn't
+    try {
+      await this.loadingSkeleton.waitFor({state: "visible", timeout: 1000});
+      // If it appeared, wait for it to disappear
+      await this.loadingSkeleton.waitFor({state: "hidden", timeout: 5000});
+    } catch {
+      // If loading skeleton never appeared, that's fine - API was fast
+      // Just add a small delay to ensure content has rendered
+      await this.page.waitForTimeout(500);
+    }
   }
 
   /**

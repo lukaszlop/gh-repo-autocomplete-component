@@ -31,14 +31,13 @@ export function useClickOutside<T extends HTMLElement | null>(
       }
     };
 
-    // Add event listeners for both mouse and touch events
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
+    // Use 'click' instead of 'mousedown'/'touchstart' to ensure onClick handlers fire first
+    // This is crucial for mobile devices where touch events need to complete before closing
+    document.addEventListener("click", handleClickOutside);
 
     // Cleanup: remove event listeners on unmount
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [ref, handler]);
 }

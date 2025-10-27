@@ -80,6 +80,9 @@ export function GitHubAutocomplete({
           handleResultSelect(result);
         }
       },
+      onEscape: () => {
+        setIsOpen(false);
+      },
       isOpen,
     });
 
@@ -109,13 +112,10 @@ export function GitHubAutocomplete({
     inputRef.current?.focus();
   }, [resetActiveIndex]);
 
-  // Handle result selection
+  // Handle result selection (for keyboard navigation)
   const handleResultSelect = useCallback(
     (result: SearchResultItemType) => {
-      // Open GitHub URL in new tab
-      window.open(result.url, "_blank", "noopener,noreferrer");
-
-      // Call onSelect callback if provided
+      // Call onSelect callback if provided (for analytics/tracking)
       if (onSelect) {
         onSelect(result);
       }
@@ -123,6 +123,33 @@ export function GitHubAutocomplete({
       // Close dropdown
       setIsOpen(false);
       resetActiveIndex();
+
+      // For keyboard navigation (Enter key), trigger the link programmatically
+      // This allows the browser's native link handling (no popup blocking)
+      const resultElement = document.getElementById(
+        `result-${sortedResults.indexOf(result)}`
+      );
+      if (resultElement) {
+        // Trigger native click on the link element
+        (resultElement as HTMLAnchorElement).click();
+      }
+    },
+    [onSelect, resetActiveIndex, sortedResults]
+  );
+
+  // Handle result click (for mouse/touch)
+  const handleResultClick = useCallback(
+    (result: SearchResultItemType) => {
+      // Call onSelect callback if provided (for analytics/tracking)
+      if (onSelect) {
+        onSelect(result);
+      }
+
+      // Close dropdown
+      setIsOpen(false);
+      resetActiveIndex();
+
+      // Link navigation is handled automatically by <a> tag
     },
     [onSelect, resetActiveIndex]
   );
@@ -309,7 +336,7 @@ export function GitHubAutocomplete({
                   id={`result-${index}`}
                   item={result}
                   isActive={index === activeIndex}
-                  onClick={() => handleResultSelect(result)}
+                  onClick={() => handleResultClick(result)}
                   onMouseEnter={() => setActiveIndex(index)}
                   data-testid={`search-result-item-${index}`}
                 />

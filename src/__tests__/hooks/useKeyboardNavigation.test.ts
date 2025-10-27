@@ -285,6 +285,58 @@ describe("useKeyboardNavigation", () => {
       expect(event.preventDefault).toHaveBeenCalled();
       expect(result.current.activeIndex).toBe(-1);
     });
+
+    it("should call onEscape callback when pressing Escape", () => {
+      const onEscape = vi.fn();
+      const {result} = renderHook(() =>
+        useKeyboardNavigation({
+          itemsCount: 5,
+          onSelect: vi.fn(),
+          isOpen: true,
+          onEscape,
+        })
+      );
+
+      act(() => {
+        result.current.setActiveIndex(2);
+      });
+
+      const event = {
+        key: "Escape",
+        preventDefault: vi.fn(),
+      } as unknown as React.KeyboardEvent;
+
+      act(() => {
+        result.current.handleKeyDown(event);
+      });
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(onEscape).toHaveBeenCalled();
+      expect(result.current.activeIndex).toBe(-1);
+    });
+
+    it("should not fail when pressing Escape without onEscape callback", () => {
+      const {result} = renderHook(() =>
+        useKeyboardNavigation({
+          itemsCount: 5,
+          onSelect: vi.fn(),
+          isOpen: true,
+        })
+      );
+
+      const event = {
+        key: "Escape",
+        preventDefault: vi.fn(),
+      } as unknown as React.KeyboardEvent;
+
+      expect(() => {
+        act(() => {
+          result.current.handleKeyDown(event);
+        });
+      }).not.toThrow();
+
+      expect(result.current.activeIndex).toBe(-1);
+    });
   });
 
   describe("Reset Active Index", () => {

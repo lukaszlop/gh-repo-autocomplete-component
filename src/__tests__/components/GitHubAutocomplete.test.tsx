@@ -127,10 +127,6 @@ describe("GitHubAutocomplete", () => {
       const onSelect = vi.fn();
       const user = userEvent.setup();
 
-      // Mock window.open
-      const mockOpen = vi.fn();
-      vi.stubGlobal("open", mockOpen);
-
       renderWithProviders(<GitHubAutocomplete onSelect={onSelect} />);
 
       const input = screen.getByPlaceholderText(/search github/i);
@@ -142,12 +138,17 @@ describe("GitHubAutocomplete", () => {
       });
 
       const results = screen.getAllByRole("option");
-      await user.click(results[0]);
+      const firstResult = results[0] as HTMLAnchorElement;
+
+      // Verify it's a link with correct attributes
+      expect(firstResult.tagName).toBe("A");
+      expect(firstResult.href).toContain("github.com");
+      expect(firstResult.target).toBe("_blank");
+      expect(firstResult.rel).toContain("noopener");
+
+      await user.click(firstResult);
 
       expect(onSelect).toHaveBeenCalled();
-      expect(mockOpen).toHaveBeenCalled();
-
-      vi.unstubAllGlobals();
     });
   });
 
@@ -264,10 +265,6 @@ describe("GitHubAutocomplete", () => {
     it("should select result with Enter key", async () => {
       const user = userEvent.setup();
 
-      // Mock window.open
-      const mockOpen = vi.fn();
-      vi.stubGlobal("open", mockOpen);
-
       renderWithProviders(<GitHubAutocomplete />);
 
       const input = screen.getByPlaceholderText(/search github/i);
@@ -278,12 +275,20 @@ describe("GitHubAutocomplete", () => {
         expect(results.length).toBeGreaterThan(0);
       });
 
+      const results = screen.getAllByRole("option");
+      const firstResult = results[0] as HTMLAnchorElement;
+
+      // Verify it's a link with correct attributes
+      expect(firstResult.tagName).toBe("A");
+      expect(firstResult.href).toContain("github.com");
+
       await user.keyboard("{ArrowDown}");
       await user.keyboard("{Enter}");
 
-      expect(mockOpen).toHaveBeenCalled();
-
-      vi.unstubAllGlobals();
+      // Verify dropdown closed (results should no longer be visible)
+      await waitFor(() => {
+        expect(screen.queryByRole("option")).not.toBeInTheDocument();
+      });
     });
 
     it("should cycle through results with arrow keys", async () => {

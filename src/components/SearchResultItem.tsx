@@ -45,22 +45,35 @@ function SearchResultItemComponent({
     return name.slice(0, 2).toUpperCase();
   };
 
+  // Handle interaction to call onSelect callback
+  const handleInteraction = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Stop propagation to prevent click-outside handler from firing
+    e.stopPropagation();
+    // Call onClick to trigger onSelect callback
+    onClick();
+    // Link will handle navigation automatically
+  };
+
   return (
-    <div
+    <a
       id={id}
       role='option'
       aria-selected={isActive}
-      onClick={onClick}
+      href={item.url}
+      target='_blank'
+      rel='noopener noreferrer'
+      onClick={handleInteraction}
       onMouseEnter={onMouseEnter}
       data-testid={dataTestId}
       data-active={isActive}
+      tabIndex={-1}
       className={`
         flex items-center gap-3 p-2 rounded-md cursor-pointer
-        transition-colors duration-150
+        transition-colors duration-150 no-underline
         ${
           isActive
             ? "bg-accent"
-            : "hover:bg-accent active:bg-accent md:hover:bg-accent md:active:bg-transparent"
+            : "active:bg-accent [@media(hover:hover)]:hover:bg-accent [@media(hover:hover)]:active:bg-accent/80"
         }
       `}
     >
@@ -96,7 +109,7 @@ function SearchResultItemComponent({
           {formatStarCount(item.stars)}
         </span>
       )}
-    </div>
+    </a>
   );
 }
 
